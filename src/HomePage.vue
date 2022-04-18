@@ -31,6 +31,7 @@
 .home {
   background-color: #1e293b;
   height: 100vh;
+  width: 100%;
   padding-top: 15rem;
   color: #cbd5e1;
 }

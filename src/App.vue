@@ -37,6 +37,7 @@
   color: var(--color-gray-800);
   background-color: var(--color-gray-100);
   min-height: 100vh;
+  min-width: 100vw;
   display: grid;
   place-items: center;
 }
