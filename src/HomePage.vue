@@ -20,6 +20,9 @@
             <li>
               <router-link to="/components/accordion">Accordion</router-link>
             </li>
+            <li>
+              <router-link to="/components/carousel">Carousel</router-link>
+            </li>
           </ul>
         </div>
       </nav>
