@@ -44,4 +44,32 @@ const previousSlide = () => {
     current.value = current.value - 1;
   }
 };
+
+let interval;
+
+const timedSlide = () => {
+  interval = setInterval(() => {
+    console.log("from timed slide");
+    nextSlide();
+  }, 3000);
+};
+
+timedSlide();
+
+watch(current, (newVal) => {
+  console.log("watcher here");
+  clearInterval(interval);
+  timedSlide();
+});
+
+// watch(
+//   current,
+//   (newVal) => {
+//     setInterval(() => {
+//       console.log("in interval");
+//       // nextSlide();
+//     }, 3000);
+//   },
+//   { immediate: true }
+// );
 </script>
