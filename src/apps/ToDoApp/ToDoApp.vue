@@ -7,16 +7,12 @@
         <button @click="createToDo">add to do</button>
       </div>
       <ul class="todos" v-if="filteredToDos.length !== 0">
-        <li v-for="todo in filteredToDos" class="todo">
-          <input
-            type="checkbox"
-            :id="todo.id"
-            @change="changeStatus($event, todo.id)"
-            :checked="todo.status === 'completed' ? true : false"
-          />
-          <label :for="todo.id">{{ todo.task }}</label>
-          <button @click="deleteToDo(todo.id)">Delete</button>
-        </li>
+        <ToDoItem
+          v-for="todo in filteredToDos"
+          :todo="todo"
+          @on-change="changeStatus"
+          @on-delete="deleteToDo"
+        />
       </ul>
       <p v-else class="notification">No items matching the criteria!</p>
       <div class="actions">
@@ -43,6 +39,7 @@
 import { computed } from "@vue/reactivity";
 import { ref } from "vue";
 import { useStore } from "vuex";
+import ToDoItem from "./ToDoItem.vue";
 
 const store = useStore();
 
@@ -53,6 +50,7 @@ const newTask = ref(null);
 const createToDo = () => {
   if (!newTask.value) return;
   store.dispatch("todos/addToDo", newTask.value);
+  newTask.value = "";
 };
 
 const deleteToDo = (id) => {
@@ -97,11 +95,6 @@ const clearCompleted = () => {
     font-size: 2.5rem;
     text-align: center;
   }
-
-  button {
-    font: inherit;
-    cursor: pointer;
-  }
 }
 
 .main {
@@ -141,6 +134,8 @@ const clearCompleted = () => {
     cursor: pointer;
     transition: all 0.2s;
     color: var(--color-green-600);
+    font: inherit;
+    cursor: pointer;
 
     &:hover,
     &:active {
@@ -156,53 +151,6 @@ const clearCompleted = () => {
   gap: 1.5rem;
 }
 
-.todo {
-  display: grid;
-  grid-template-columns: auto 4fr 1fr;
-  align-items: center;
-  transition: all 0.2s;
-  height: 2.5rem;
-  gap: 1rem;
-
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    cursor: pointer !important;
-    background-color: var(--color-gray-50);
-  }
-
-  label,
-  input {
-    cursor: inherit;
-    height: 100%;
-  }
-
-  label {
-    display: flex;
-    align-items: center;
-  }
-
-  input {
-    accent-color: var(--color-green-500);
-    height: 1.5;
-    width: 1.5rem;
-    margin-left: 0.5rem;
-  }
-
-  button {
-    border: none;
-    padding: 0.3rem 1rem;
-    background-color: rgb(255, 134, 134);
-    border-radius: 2px;
-    height: 100%;
-    &:hover,
-    &:active {
-      outline: none;
-      background-color: rgba(255, 134, 134, 0.696);
-    }
-  }
-}
-
 .actions {
   display: flex;
   justify-content: space-between;
@@ -213,6 +161,8 @@ const clearCompleted = () => {
     padding: 0.4rem 1rem;
     background-color: var(--color-green-100);
     color: var(--color-green-600);
+    font: inherit;
+    cursor: pointer;
 
     &:active,
     &:hover {
