@@ -23,6 +23,9 @@
             <li>
               <router-link to="/components/carousel">Carousel</router-link>
             </li>
+            <li>
+              <router-link to="/components/buttons">Buttons</router-link>
+            </li>
           </ul>
         </div>
       </nav>
