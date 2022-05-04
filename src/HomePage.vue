@@ -6,7 +6,10 @@
           <h1>Apps</h1>
           <ul>
             <li>
-              <router-link to="/to-do">To Do App</router-link>
+              <router-link to="/to-do-vuex">To Do App VueX</router-link>
+            </li>
+            <li>
+              <router-link to="/to-do-pinia">To Do App Pinia</router-link>
             </li>
           </ul>
         </div>
