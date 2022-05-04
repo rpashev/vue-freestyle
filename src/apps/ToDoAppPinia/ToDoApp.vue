@@ -4,14 +4,14 @@
     <div class="main">
       <div class="new-todo">
         <input type="text" placeholder="Create a new to do" v-model.trim="newTask" />
-        <button @click="createToDo">add to do</button>
+        <button @click="createToDoHandler">add to do</button>
       </div>
       <ul class="todos" v-if="filteredToDos && filteredToDos.length !== 0">
         <ToDoItem
           v-for="todo in filteredToDos"
           :todo="todo"
-          @on-change="changeStatus"
-          @on-delete="deleteToDo"
+          @on-change="changeStatusHandler"
+          @on-delete="deleteHandler"
         />
       </ul>
       <p v-else class="notification">No items matching the criteria!</p>
@@ -39,24 +39,28 @@
 import { computed } from "@vue/reactivity";
 import { ref } from "vue";
 import { useTodos } from "../../stores-pinia/ToDoStore";
+import { storeToRefs } from "pinia";
 import ToDoItem from "./ToDoItem.vue";
 
 const store = useTodos();
+const { todosList } = storeToRefs(store);
+const { addToDo, clearCompleted, changeStatus, deleteToDo } = store;
+
 const newTask = ref(null);
 
-const createToDo = () => {
+const createToDoHandler = () => {
   if (!newTask.value) return;
-  store.addToDo(newTask.value);
+  addToDo(newTask.value);
   newTask.value = "";
 };
 
-const deleteToDo = (id) => {
-  store.deleteToDo(id);
+const deleteHandler = (id) => {
+  deleteToDo(id);
 };
 
-const changeStatus = (event, id) => {
+const changeStatusHandler = (event, id) => {
   const status = event.target.checked ? "completed" : "pending";
-  store.changeStatus({ id, status });
+  changeStatus({ id, status });
 };
 
 const filter = ref("all");
@@ -68,19 +72,15 @@ const setFilter = (status) => {
 };
 
 const filteredToDos = computed(() => {
-  if (filter.value === "all") return store.todosList;
+  if (filter.value === "all") return todosList.value;
 
-  return store.todosList.filter((todo) => todo.status === filter.value);
+  return todosList.value.filter((todo) => todo.status === filter.value);
 });
 
 const pendingAmount = computed(() => {
-  const pending = store.todosList.filter((todo) => todo.status === "pending");
+  const pending = todosList.value.filter((todo) => todo.status === "pending");
   return `Tasks left to complete: ${pending.length}`;
 });
-
-const clearCompleted = () => {
-  store.clearCompleted();
-};
 </script>
 
 <style lang="scss" scoped>
