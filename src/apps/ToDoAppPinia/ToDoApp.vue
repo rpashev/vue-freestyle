@@ -6,7 +6,7 @@
         <input type="text" placeholder="Create a new to do" v-model.trim="newTask" />
         <button @click="createToDo">add to do</button>
       </div>
-      <ul class="todos" v-if="filteredToDos.length !== 0">
+      <ul class="todos" v-if="filteredToDos && filteredToDos.length !== 0">
         <ToDoItem
           v-for="todo in filteredToDos"
           :todo="todo"
@@ -38,28 +38,25 @@
 <script setup>
 import { computed } from "@vue/reactivity";
 import { ref } from "vue";
-import { useStore } from "vuex";
+import { useTodos } from "../../stores-pinia/ToDoStore";
 import ToDoItem from "./ToDoItem.vue";
 
-const store = useStore();
-
-const todos = computed(() => store.getters["todos/todos"]);
-
+const store = useTodos();
 const newTask = ref(null);
 
 const createToDo = () => {
   if (!newTask.value) return;
-  store.dispatch("todos/addToDo", newTask.value);
+  store.addToDo(newTask.value);
   newTask.value = "";
 };
 
 const deleteToDo = (id) => {
-  store.dispatch("todos/deleteToDo", id);
+  store.deleteToDo(id);
 };
 
 const changeStatus = (event, id) => {
   const status = event.target.checked ? "completed" : "pending";
-  store.dispatch("todos/changeStatus", { id, status });
+  store.changeStatus({ id, status });
 };
 
 const filter = ref("all");
@@ -71,18 +68,18 @@ const setFilter = (status) => {
 };
 
 const filteredToDos = computed(() => {
-  if (filter.value === "all") return todos.value;
+  if (filter.value === "all") return store.todosList;
 
-  return todos.value.filter((todo) => todo.status === filter.value);
+  return store.todosList.filter((todo) => todo.status === filter.value);
 });
 
 const pendingAmount = computed(() => {
-  const pending = todos.value.filter((todo) => todo.status === "pending");
+  const pending = store.todosList.filter((todo) => todo.status === "pending");
   return `Tasks left to complete: ${pending.length}`;
 });
 
 const clearCompleted = () => {
-  store.dispatch("todos/clearCompleted");
+  store.clearCompleted();
 };
 </script>
 
